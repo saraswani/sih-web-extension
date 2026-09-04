@@ -390,7 +390,7 @@
   /**
    * Renders the detected PII items and their verified confidence scores in the on-page panel.
    */
-  function renderPIIConfidenceList(entities = [], categorySummary = null) {
+  function renderPIIConfidenceList(entities = [], categorySummary = null, detectedFaces = []) {
     const card = document.getElementById('ps-pii-card');
     const list = document.getElementById('ps-pii-list');
     const label = document.getElementById('ps-pii-summary-label');
@@ -398,21 +398,42 @@
 
     if (!card || !list) return;
 
-    if (!entities || entities.length === 0) {
+    const hasFaces = detectedFaces && detectedFaces.length > 0;
+    const hasEntities = entities && entities.length > 0;
+
+    if (!hasEntities && !hasFaces) {
       card.style.display = 'none';
       list.innerHTML = '';
       return;
     }
 
     card.style.display = 'flex';
-    label.textContent = `${entities.length} masked ${entities.length === 1 ? 'entity' : 'entities'}`;
+    label.textContent = `${entities.length} PII items${hasFaces ? ` + ${detectedFaces.length} face photo(s)` : ''}`;
     list.innerHTML = '';
 
     // Render prominent human-readable Document Redaction Summary Banner
     if (banner) {
-      const summaryText = categorySummary?.summaryString || `Redacted: ${entities.length} sensitive items`;
+      let summaryText = categorySummary?.summaryString || (hasEntities ? `Redacted: ${entities.length} sensitive items` : 'No text PII detected');
+      if (hasFaces) {
+        summaryText += ` | 📷 Photo Detected (${detectedFaces.length} face${detectedFaces.length > 1 ? 's' : ''} blurred with BlazeFace ML)`;
+      }
       banner.innerHTML = `<span>🛡️ <strong>${summaryText}</strong></span>`;
       banner.style.display = 'flex';
+    }
+
+    // Render face photo row if faces were detected
+    if (hasFaces) {
+      const faceRow = document.createElement('div');
+      faceRow.className = 'ps-pii-item';
+      faceRow.style.borderLeft = '3px solid #00f2fe';
+      faceRow.innerHTML = `
+        <div class="ps-pii-token-wrap">
+          <span class="ps-pii-token">📷 [PHOTO / FACE REDACTED]</span>
+          <span class="ps-pii-cat">(BlazeFace ML Vision)</span>
+        </div>
+        <span class="ps-conf-badge high" title="BlazeFace ML Bounding Box Face Blur Active">95% Conf</span>
+      `;
+      list.appendChild(faceRow);
     }
 
     // Deduplicate by token for clean display
@@ -519,6 +540,12 @@
 
       const detectedFaces = await faceDetector.scanPageImages();
       const faceStatus = faceDetector.getStatus();
+
+      // Inject Live DOM Face Overlays & Photo Redacted Badges
+      if (domRedactor && typeof domRedactor.redactDOMFaces === 'function') {
+        domRedactor.redactDOMFaces(detectedFaces);
+      }
+
       instrumentation.endStage('local_face_detection', { facesCount: detectedFaces.length, backend: faceStatus.activeBackend });
 
       // 3. Screen-Understanding & UI Structure Model (Component 1)
@@ -574,7 +601,7 @@
       document.getElementById('ps-stats-grid').style.display = 'grid';
 
       // Render Surfaced PII Confidence List & Document Redaction Summary
-      renderPIIConfidenceList(domRedactionResult.entities || [], domRedactionResult.categorySummary);
+      renderPIIConfidenceList(domRedactionResult.entities || [], domRedactionResult.categorySummary, detectedFaces);
 
       // Show Redacted Preview Image
       if (sanitizedImageBase64) {
