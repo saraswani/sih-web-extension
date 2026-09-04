@@ -200,10 +200,24 @@ function packageExtension() {
   const firefoxZipPath = path.join(distDir, 'privacyshield-firefox-v1.0.0.zip');
   fs.writeFileSync(firefoxZipPath, firefoxZipBuf);
 
+  // 3. Sync to Website Download Folder (for live website downloads)
+  const websiteDownloadDir = path.join(rootDir, 'website', 'public', 'downloads');
+  if (!fs.existsSync(websiteDownloadDir)) {
+    fs.mkdirSync(websiteDownloadDir, { recursive: true });
+  }
+
+  const websiteChromePath = path.join(websiteDownloadDir, 'phantom-ai-chrome.zip');
+  const websiteFirefoxZipPath = path.join(websiteDownloadDir, 'phantom-ai-firefox.zip');
+  const websiteFirefoxXpiPath = path.join(websiteDownloadDir, 'phantom-ai-firefox.xpi');
+
+  fs.writeFileSync(websiteChromePath, chromeZipBuf);
+  fs.writeFileSync(websiteFirefoxZipPath, firefoxZipBuf);
+  fs.writeFileSync(websiteFirefoxXpiPath, firefoxZipBuf);
+
   console.log('\n------------------------------------------------------------------------');
-  console.log('🎉 Production Packages Successfully Built:');
-  console.log(`• Chrome Web Store:  dist/privacyshield-chrome-v1.0.0.zip (${(chromeZipBuf.length / (1024 * 1024)).toFixed(2)} MB)`);
-  console.log(`• Firefox AMO:       dist/privacyshield-firefox-v1.0.0.zip (${(firefoxZipBuf.length / (1024 * 1024)).toFixed(2)} MB)`);
+  console.log('🎉 Production Packages Successfully Built & Synced to Website Downloads:');
+  console.log(`• Chrome Package:    dist/privacyshield-chrome-v1.0.0.zip -> website/public/downloads/phantom-ai-chrome.zip (${(chromeZipBuf.length / (1024 * 1024)).toFixed(2)} MB)`);
+  console.log(`• Firefox Package:   dist/privacyshield-firefox-v1.0.0.zip -> website/public/downloads/phantom-ai-firefox.zip (${(firefoxZipBuf.length / (1024 * 1024)).toFixed(2)} MB)`);
   console.log(`• Raw Assets Size:   ${(totalRawBytes / (1024 * 1024)).toFixed(2)} MB`);
   console.log('========================================================================\n');
 }
