@@ -1,0 +1,6 @@
+# Website environment secrets and build output
+.env
+.env.local
+node_modules/
+dist/
+*.log

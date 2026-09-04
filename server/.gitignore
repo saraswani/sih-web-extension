@@ -1,0 +1,5 @@
+# Server environment secrets
+.env
+.env.local
+node_modules/
+*.log

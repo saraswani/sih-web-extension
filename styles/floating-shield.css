@@ -1,0 +1,182 @@
+/* PrivacyShield - Floating Shield Action Button (FAB) & Pulse Animations */
+
+@keyframes ps-pulse-glow {
+  0% {
+    box-shadow: 0 0 12px rgba(0, 242, 254, 0.4), 0 0 25px rgba(79, 70, 229, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 22px rgba(0, 242, 254, 0.8), 0 0 35px rgba(79, 70, 229, 0.6);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 12px rgba(0, 242, 254, 0.4), 0 0 25px rgba(79, 70, 229, 0.3);
+    transform: scale(1);
+  }
+}
+
+@keyframes ps-spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ps-pulse-aura {
+  0% { opacity: 0.7; transform: scale(0.99); }
+  100% { opacity: 1; transform: scale(1.02); }
+}
+
+@keyframes ps-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Container Host */
+#privacyshield-root {
+  position: fixed !important;
+  bottom: 28px !important;
+  right: 28px !important;
+  z-index: 2147483647 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  color-scheme: dark !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Floating Action Button (FAB) */
+.ps-fab-button {
+  width: 58px !important;
+  height: 58px !important;
+  min-width: 58px !important;
+  min-height: 58px !important;
+  max-width: 58px !important;
+  max-height: 58px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0369a1 100%) !important;
+  border: 2px solid rgba(0, 242, 254, 0.8) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 18px rgba(0, 242, 254, 0.5) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  outline: none !important;
+  position: relative !important;
+  user-select: none !important;
+  z-index: 2147483647 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.ps-fab-button:hover {
+  transform: translateY(-3px) scale(1.08) !important;
+  border-color: #00f2fe !important;
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 242, 254, 0.7) !important;
+}
+
+.ps-fab-button:active {
+  transform: translateY(1px) scale(0.96) !important;
+}
+
+.ps-fab-button.ps-active {
+  animation: ps-pulse-glow 2s infinite ease-in-out !important;
+  border-color: #38bdf8 !important;
+}
+
+/* Shield Icon SVG inside FAB */
+.ps-shield-svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: #00f2fe;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 4px rgba(0, 242, 254, 0.6));
+  transition: stroke 0.3s ease;
+}
+
+.ps-fab-button:hover .ps-shield-svg {
+  stroke: #38bdf8;
+}
+
+/* Live Badge on FAB */
+.ps-fab-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.ps-fab-badge.offline {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.ps-fab-badge.power {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+}
+
+/* Floating Live Latency Counter under FAB */
+.ps-fab-latency {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95);
+  color: #38bdf8;
+  font-size: 9px;
+  font-weight: 700;
+  font-family: ui-monospace, monospace;
+  padding: 1px 5px;
+  border-radius: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* Tooltip on FAB hover */
+.ps-fab-tooltip {
+  position: absolute;
+  right: 68px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(12px);
+  color: #e2e8f0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(10px);
+  transition: all 0.2s ease;
+}
+
+.ps-fab-button:hover .ps-fab-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}

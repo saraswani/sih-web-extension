@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  privacyshield-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: privacyshield-proxy-server
+    restart: unless-stopped
+    ports:
+      - "3001:8080"
+    environment:
+      - PORT=8080
+      - NODE_ENV=production
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.6-flash}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+      - VLM_MODEL=${VLM_MODEL:-qwen/qwen-2-vl-72b-instruct}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8080/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

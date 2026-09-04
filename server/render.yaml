@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: privacyshield-proxy
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.6-flash
+      - key: VLM_MODEL
+        value: qwen/qwen-2-vl-72b-instruct
+      - key: OPENROUTER_API_KEY
+        sync: false

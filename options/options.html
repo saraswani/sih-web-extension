@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrivacyShield - Configuration & Local Profile</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="options-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="shield-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <h1>PrivacyShield Settings</h1>
+          <span class="subtext">Client-Side Privacy Configuration</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="save-btn" id="btn-save-settings">Save Changes</button>
+      </div>
+    </header>
+
+    <!-- Zero Key Banner -->
+    <div class="info-banner">
+      <div class="info-icon">🔒</div>
+      <div class="info-text">
+        <strong>Zero Client-Side API Keys:</strong> In compliance with the ISRO SIH specification, VLM API keys are stored exclusively as server-side environment variables on your proxy server (<code>server/.env</code>). No API key is ever entered or stored in this browser extension.
+      </div>
+    </div>
+
+    <!-- Power Saver Mode Section -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>1. Power Saver Mode & Delta Throttling</h2>
+        <span class="section-badge" style="background:rgba(139,92,246,0.15);color:#a78bfa;border-color:rgba(139,92,246,0.3);">Energy & Bandwidth</span>
+      </div>
+      <p class="section-desc">When enabled, the Local Decision Engine throttles re-scans by evaluating topological screen fingerprints. Identical DOM structures skip redundant AI inference and reuse local masks, minimizing CPU, battery, and network consumption.</p>
+      
+      <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(30,41,59,0.5);padding:14px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);">
+        <div>
+          <strong style="color:#f8fafc;font-size:14px;">Enable Power Saver Throttling</strong>
+          <div style="color:#94a3b8;font-size:12px;margin-top:2px;">Skip redundant DOM and vision re-analysis when fingerprint delta is 0</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggle-power-mode">
+          <span class="slider round"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Proxy Server Configuration -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>2. Proxy Server Endpoint & Health</h2>
+        <span class="section-badge">Network Proxy</span>
+      </div>
+      <p class="section-desc">The URL of your local or hosted PrivacyShield proxy server that handles VLM inference.</p>
+      
+      <div class="form-group">
+        <label for="input-proxy-url">Proxy Server URL</label>
+        <div class="input-with-action">
+          <input type="url" id="input-proxy-url" value="http://localhost:3001/api/agent" placeholder="http://localhost:3001/api/agent"/>
+          <button class="test-btn" id="btn-test-proxy">Test Connection</button>
+        </div>
+        <span class="status-msg" id="proxy-status-msg"></span>
+      </div>
+    </section>
+
+    <!-- System Diagnostics & Telemetry Readout -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>3. System Diagnostics & Hardware Footprint</h2>
+        <span class="section-badge" style="background:rgba(16,185,129,0.15);color:#34d399;border-color:rgba(16,185,129,0.3);">Live Diagnostics</span>
+      </div>
+      <p class="section-desc">Real-time hardware capabilities, active ML runtime backend, and memory consumption on this device.</p>
+      
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-num" id="diag-memory">0.0 MB</div>
+          <div class="stat-title">JS Heap Memory</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="diag-backend" style="font-size:13px;">Detecting...</div>
+          <div class="stat-title">Face ML Backend</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="diag-hw" style="font-size:13px;">Detecting...</div>
+          <div class="stat-title">Hardware Provider</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="diag-bandwidth">0.0 KB</div>
+          <div class="stat-title">Data Sent (Live)</div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;">
+        <button class="secondary-btn-sm" id="btn-reset-bandwidth">Reset Bandwidth Counter</button>
+      </div>
+    </section>
+
+    <!-- Local Redaction Audit Log (On-Device Only) -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>4. Local Redaction Audit Log</h2>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="section-badge" style="background:rgba(56,189,248,0.15);color:#38bdf8;">Device-Only (Never Transmitted)</span>
+          <button class="secondary-btn-sm" id="btn-clear-audit">Clear Log</button>
+        </div>
+      </div>
+      <p class="section-desc">Auditable record of sensitive entities detected and masked on this machine. Raw values are <strong>never recorded or stored</strong> anywhere.</p>
+      
+      <div class="audit-table-wrap">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Host / Domain</th>
+              <th>Category</th>
+              <th>Token Masked</th>
+              <th>Confidence</th>
+              <th>Verification Method</th>
+            </tr>
+          </thead>
+          <tbody id="audit-log-tbody">
+            <tr>
+              <td colspan="6" style="text-align:center;color:#94a3b8;padding:16px;">No redaction events recorded yet. Run a scan to generate audit events.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- User Profile Configuration -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>5. Default User Profile (Single Source of Truth)</h2>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="secondary-btn-sm" id="btn-import-profile" style="background:rgba(16,185,129,0.2);color:#34d399;border:1px solid rgba(16,185,129,0.4);">
+            📥 Import Profile JSON
+          </button>
+          <button class="secondary-btn-sm" id="btn-export-profile" style="background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);">
+            📤 Export Profile JSON
+          </button>
+          <input type="file" id="file-import-profile" accept=".json" style="display:none;" />
+        </div>
+      </div>
+      <p class="section-desc">Real or mock default values used by the Action Executor during form autofill tasks. Stored <strong>100% locally on your device</strong> in extension storage — never sent over the network or to the proxy server.</p>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="profile-name">Full Name</label>
+          <input type="text" id="profile-name" value="Aarav Sharma" placeholder="e.g., Aarav Sharma"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-firstname">First Name</label>
+          <input type="text" id="profile-firstname" value="Aarav" placeholder="e.g., Aarav"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-lastname">Last Name</label>
+          <input type="text" id="profile-lastname" value="Sharma" placeholder="e.g., Sharma"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-email">Email Address</label>
+          <input type="email" id="profile-email" value="aarav.sharma@example.com" placeholder="name@domain.com"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-phone">Phone Number</label>
+          <input type="tel" id="profile-phone" value="+91 98765 43210" placeholder="+91 9876543210"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-aadhaar">Aadhaar Number (Verhoeff Valid)</label>
+          <input type="text" id="profile-aadhaar" value="2345 6789 0123" placeholder="12-digit Aadhaar"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-pan">PAN Card Number</label>
+          <input type="text" id="profile-pan" value="ABCDE1234F" placeholder="10-digit PAN"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-passport">Passport / Government Document ID</label>
+          <input type="text" id="profile-passport" value="Z1234567" placeholder="Passport or Voter ID Number"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-gender">Gender</label>
+          <input type="text" id="profile-gender" value="Male" placeholder="Male / Female / Other"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-city">City</label>
+          <input type="text" id="profile-city" value="Bengaluru" placeholder="e.g., Bengaluru"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-state">State / Province</label>
+          <input type="text" id="profile-state" value="Karnataka" placeholder="e.g., Karnataka"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-pincode">Pincode / Zip</label>
+          <input type="text" id="profile-pincode" value="560103" placeholder="e.g., 560103"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-country">Country</label>
+          <input type="text" id="profile-country" value="India" placeholder="e.g., India"/>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="profile-address">Street Address</label>
+          <input type="text" id="profile-address" value="Flat 402, Lotus Heights, Outer Ring Road, Bengaluru 560103" placeholder="Flat, Street, Area"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-photo">Photo URL / Image Link</label>
+          <input type="url" id="profile-photo" value="https://images.unsplash.com/photo-1534528741775-53994a69daeb" placeholder="https://domain.com/photo.jpg"/>
+        </div>
+
+        <div class="form-group">
+          <label for="profile-signature">Digital Signature Text / Identifier</label>
+          <input type="text" id="profile-signature" value="Aarav Sharma (Digitally Signed)" placeholder="e.g., Aarav Sharma"/>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="profile-feedback">Default Feedback / Message (Used for textareas/feedback fields)</label>
+          <input type="text" id="profile-feedback" value="The portal interface was intuitive and the process was completed seamlessly." placeholder="Default comments or review"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- Save Toast Notification -->
+    <div class="toast" id="save-toast">✔ Settings saved successfully to local extension storage!</div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
