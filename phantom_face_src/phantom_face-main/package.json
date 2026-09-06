@@ -3,11 +3,7 @@
   "version": "1.0.0",
   "description": "PrivacyShield: A Privacy-Preserving Vision Agent for Chrome and Firefox (Manifest V3)",
   "scripts": {
-    "build": "npm run build --prefix website",
-    "build:website": "npm run build --prefix website",
     "generate-icons": "node generate-icons.js",
-    "bundle-vision": "node bundle-vision.js",
-    "package": "node package-extension.js",
     "test": "node test/evaluate.js",
     "start-server": "node server/server.js"
   },
@@ -27,7 +23,8 @@
     "@tensorflow/tfjs": "^4.22.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "esbuild": "^0.25.0"

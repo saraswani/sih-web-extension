@@ -13,10 +13,12 @@ website/dist/
 website/node_modules/
 server/node_modules/
 
-# Logs & temp files
+# Logs, temp & archive files
 *.log
+*.zip
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .DS_Store
 Thumbs.db
+

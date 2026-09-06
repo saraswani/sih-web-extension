@@ -85,14 +85,41 @@ Choose any of the following 1-click cloud providers:
 
 ---
 
-### Option D: Vercel (Serverless Function)
+---
 
-1. Install Vercel CLI: `npm i -g vercel`
-2. Navigate to server folder: `cd server`
-3. Deploy: `vercel --prod`
-4. Set environment variable in Vercel dashboard:
-   - `GEMINI_API_KEY = YOUR_GEMINI_API_KEY_HERE`
-   - `GEMINI_MODEL = gemini-3.6-flash`
+### Option E: Netlify (Frontend Website Deployment)
+
+Deploy the PrivacyShield presentation landing site and documentation to **Netlify**:
+
+#### Method 1: Automatic Continuous Deployment (Git Import - Recommended)
+1. Log in to [Netlify App](https://app.netlify.com).
+2. Click **Add new site** → **Import an existing project**.
+3. Choose your Git provider (GitHub / GitLab / Bitbucket) and select the `PrivacyShield` repository.
+4. Netlify will auto-detect `netlify.toml` in the repository root:
+   - **Base Directory**: `website`
+   - **Build Command**: `npm run build`
+   - **Publish Directory**: `website/dist` (or `dist` relative to base)
+5. Click **Deploy Website**. Netlify will build and generate an HTTPS URL (e.g., `https://privacyshield.netlify.app`).
+
+#### Method 2: Netlify CLI (Command Line)
+1. Install Netlify CLI globally (if not installed):
+   ```bash
+   npm install -g netlify-cli
+   ```
+2. Navigate to the website folder and build:
+   ```bash
+   cd website
+   npm run build
+   ```
+3. Deploy directly to production:
+   ```bash
+   netlify deploy --prod --dir=dist
+   ```
+
+#### Method 3: Drag & Drop (Manual Web Upload)
+1. Run `npm run build` in the `website` directory.
+2. Open [Netlify Drop](https://app.netlify.com/drop).
+3. Drag and drop the `website/dist` folder into the Netlify browser upload window.
 
 ---
 
